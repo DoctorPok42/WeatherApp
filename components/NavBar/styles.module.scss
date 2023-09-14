@@ -1,0 +1,30 @@
+.containernavbar {
+  width: 100%;
+  height: 8vh;
+  background-color: var(--blue-light);
+  display: flex;
+  transition: var(--transition);
+
+  .containerlogo {
+    width: 100%;
+    height: 100%;
+    margin-left: 5rem;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+
+    img {
+      width: 4em;
+      user-select: none;
+    }
+
+    h2 {
+      font-size: 2rem;
+      margin: 0;
+      margin-left: 1rem;
+      margin-top: .4rem;
+      color: var(--logo-color);
+      user-select: none;
+    }
+  }
+}
