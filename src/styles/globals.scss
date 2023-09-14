@@ -1,0 +1,96 @@
+@font-face {
+  font-family: 'Nunito';
+  src: url('../../fonts/Nunito-Regular.ttf');
+}
+
+:root {
+  --max-width: 1200px;
+  --border-radius: 10px;
+  --transition: all 0.15s ease-in-out;
+  --font-family: 'Nunito', sans-serif;
+
+  --red: #ef5350;
+  --red-dark: #b61827;
+  --red-light: #ffcdd2;
+
+  --blue: #2196f3;
+  --blue-dark: #0d47a1;
+  --blue-light: #bbdefb;
+
+  --green: #4caf50;
+  --green-dark: #1b5e20;
+  --green-light: #c8e6c9;
+
+  --yellow: #ffeb3b;
+  --yellow-dark: #f57f17;
+  --yellow-light: #fff9c4;
+
+  --grey: #9e9e9e;
+  --grey-dark: #424242;
+  --grey-light: #e0e0e0;
+  --black: #212121;
+
+  --white: #ffffff;
+  --logo-color: #5271ff;
+  --red-logo: #e05a47;
+
+  --git_grey:#21262d;
+  --git_black:#0d1117;
+  --git_boxes:#30363d;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: var(--font-family);
+  transition: 0.5s;
+}
+
+@keyframes spin {
+  0% {
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(0.75);
+  }
+  50% {
+    transform: scale(1);
+  }
+  75% {
+    transform: scale(0.75);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes done {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.container1 {
+  width: 100%;
+  height: calc(100vh - 12vh);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-direction: column;
+
+  .container1_text {
+    width: 50%;
+    height: 10%;
+    margin: 0;
+    margin-top: 3%;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+  }
+}
