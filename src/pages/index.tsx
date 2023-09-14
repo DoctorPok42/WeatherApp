@@ -49,8 +49,8 @@ const Home = () => {
   return (
     <>
       <Head>
-        <title>MyTodo</title>
-        <meta name="description" content="MyTodo" />
+        <title>Weather App</title>
+        <meta name="description" content="Weather App" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
