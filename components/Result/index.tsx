@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faWind, faDroplet, faFan, faEye, faLungs } from '@fortawesome/free-solid-svg-icons';
 import Area from '../Area';
 
 import styles from './styles.module.scss'
@@ -18,10 +20,34 @@ const Result = ({ data }: ResultProps) => {
         "Hazardous"
     ]
 
+    const epaColor = [
+        "#17ead9",
+        "#6078ea",
+        "#ff758c",
+        "#ff6b6b",
+        "#ed8f03",
+        "#ef504c"
+    ]
+
+    const tempColor = [
+        "#17ead9",
+        "#FCCF31",
+        "#ef504c"
+    ]
+
+    const actual = data.dataHistory.forecast.forecastday[0].hour[
+        Date.now() > new Date(data.data.location.localtime).getTime() ?
+            new Date(data.data.location.localtime).getHours() :
+            new Date().getHours()
+    ]
+
     return (
         <div className={styles.result}>
             <div className={styles.result__container}>
                 <div className={styles.box}>
+                    <h2 style={{
+                        color: tempColor[actual.temp_c < 25 ? 0 : actual.temp_c < 32 ? 1 : 2]
+                    }}>{actual.temp_c}°C</h2>
                     <h2>
                         {data.data.location.name}, <span>{data.data.location.country}</span>
                         <img src={data.data.current.condition.icon} alt={data.data.current.condition.text} />
@@ -30,32 +56,44 @@ const Result = ({ data }: ResultProps) => {
                 </div>
 
                 <div className={styles.box}>
-                    <h2>Wind</h2>
+                    <h2>Wind
+                        <FontAwesomeIcon className={styles.icon} icon={faWind} />
+                    </h2>
                     <span>{data.data.current.wind_kph} km/h </span>
                     <span>{data.data.current.wind_dir}</span>
                 </div>
 
                 <div className={styles.box}>
-                    <h2>Humidity</h2>
+                    <h2>Humidity
+                        <FontAwesomeIcon className={styles.icon} style={{
+                            width: ".7rem"
+                        }} icon={faDroplet} />
+                    </h2>
                     <span>{data.data.current.humidity}%</span>
                 </div>
 
                 <div className={styles.box}>
-                    <h2>Pressure</h2>
+                    <h2>Pressure
+                        <FontAwesomeIcon className={styles.icon} icon={faFan} />
+                    </h2>
                     <span>{data.data.current.pressure_mb} mb</span>
                 </div>
 
                 <div className={styles.box}>
-                    <h2>Visibility</h2>
+                    <h2>Visibility
+                        <FontAwesomeIcon className={styles.icon} icon={faEye} />
+                    </h2>
                     <span>{data.data.current.vis_km} km</span>
                 </div>
 
-                <div className={styles.box}>
-                    <h2>Air Quality (
-                        {
+                <div className={styles.box} style={{
+                    backgroundColor: epaColor[data.data.current.air_quality["us-epa-index"] - 1]
+                }}>
+                    <h2>Air Quality
+                        ({
                             epa[data.data.current.air_quality["us-epa-index"] - 1]
-                        }
-                        )
+                        })
+                        <FontAwesomeIcon className={styles.icon} icon={faLungs} />
                     </h2>
                     <span>Co: {data.data.current.air_quality.co} </span>
                     <span> | No2: {data.data.current.air_quality.no2}</span>
@@ -66,18 +104,12 @@ const Result = ({ data }: ResultProps) => {
                     float: "right"
                 }}>
                     <h2>Temperature</h2>
-                    <span>{data.dataHistory.forecast.forecastday[0].hour[
-                        Date.now() > new Date(data.data.location.localtime).getTime() ?
-                            new Date(data.data.location.localtime).getHours() :
-                            new Date().getHours()
-                    ].temp_c}°C </span>
-                    <span> Feel like {data.dataHistory.forecast.forecastday[0].hour[
-                        Date.now() > new Date(data.data.location.localtime).getTime() ?
-                            new Date(data.data.location.localtime).getHours() :
-                            new Date().getHours()
-                    ].feelslike_c}°C</span>
+                    <span>{actual.temp_c}°C </span>
+                    <span> Feel like {actual.feelslike_c}°C</span>
 
-                    <Area colorData={["#17ead9"]} data={data.dataHistory.forecast.forecastday[0].hour} />
+                    <Area colorData={[
+                        tempColor[actual.temp_c < 25 ? 0 : actual.temp_c < 32 ? 1 : 2]
+                    ]} data={data.dataHistory.forecast.forecastday[0].hour} />
                 </div>
 
             </div>
