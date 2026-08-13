@@ -1,0 +1,135 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-card: var(--card);
+  --color-track: var(--track);
+  --color-text: var(--text);
+  --color-muted: var(--muted);
+
+  --color-temp-good: #17ead9;
+  --color-temp-mild: #ffb648;
+  --color-temp-hot: #ff6b6b;
+
+  --color-air-quality-good: #17ead9;
+  --color-air-quality-moderate: #ffb648;
+  --color-air-quality-unhealthy-1: #ff6b6b;
+  --color-air-quality-unhealthy-2: #ff0000;
+  --color-air-quality-very-unhealthy: #8f3f97;
+  --color-air-quality-hazardous: #7e0023;
+}
+
+:root {
+  --max-width: 1200px;
+  --border-radius: 10px;
+  --transition: all 0.15s ease-in-out;
+  --font-family: 'Nunito', sans-serif;
+
+  --bg: #f5f7fb;
+  --card: #ffffff;
+  --track: #eef1fa;
+  --text: #12151c;
+  --muted: #5c6577;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
+    --bg: #0b0e14;
+    --card: #151a24;
+    --track: #1c222e;
+    --text: #eef1f7;
+    --muted: #93a0b4;
+  }
+}
+
+:root.dark {
+  --bg: #0b0e14;
+  --card: #151a24;
+  --track: #1c222e;
+  --text: #eef1f7;
+  --muted: #93a0b4;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: var(--font-family);
+  transition: 0.5s;
+  font-weight: 600;
+  font-size: 1.05rem;
+  background-color: var(--color-bg);
+  color: var(--text);
+}
+
+.display {
+  font-size: 2.4rem;
+  font-weight: 800;
+}
+
+h1 {
+  font-size: 1.6rem;
+  font-weight: 800;
+}
+
+h2 {
+  font-size: 1.15rem;
+  font-weight: 800;
+}
+
+.small {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.label {
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+@keyframes spin {
+  0% {
+    transform: scale(1);
+  }
+
+  25% {
+    transform: scale(0.75);
+  }
+
+  50% {
+    transform: scale(1);
+  }
+
+  75% {
+    transform: scale(0.75);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes done {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.box {
+  flex: 1 1 120px;
+  background: var(--color-card);
+  border: 1px solid var(--color-card-border);
+  box-shadow: var(--color-shadow);
+  border-radius: 20px;
+  padding: 1.25rem 1.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: .25rem;
+  position: relative;
+  font-size: 1.02rem;
+}
