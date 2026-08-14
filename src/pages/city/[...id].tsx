@@ -1,9 +1,9 @@
-import Head from 'next/head'
-import { SearchBar } from '../../components'
-import { useState } from 'react'
+import { useEffect, useState } from "react"
+import { Result, SearchBar } from "../../../components"
+import ErrorPopup from "../../../components/Error";
 
-const Home = () => {
-  const [text, setText] = useState<string>('')
+const City = ({ id, data }: { id: string; data: any }) => {
+  const [text, setText] = useState<string>(data?.data?.location.name || id)
   const [error, setError] = useState<string>("")
 
   const handleSearch = async (isUsingPosition: { latitude: number; longitude: number } | false = false) => {
@@ -52,35 +52,41 @@ const Home = () => {
     })
   }
 
+  useEffect(() => {
+    if (!data) {
+      setText(id)
+      handleSearch();
+    } else if (data.error) {
+      setError("City not found")
+    }
+  }, [data])
+
   return (
-    <>
-      <Head>
-        <title>Weather App</title>
-        <meta name="description" content="Weather App" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+    <div className="mx-auto px-6">
+      <SearchBar text={text} setText={setText} handleSearch={handleSearch} getPosition={handleGetPosition} />
 
-      <div className="mx-auto px-6">
-        <SearchBar text={text} setText={setText} handleSearch={handleSearch} getPosition={handleGetPosition} />
-      </div>
-
-      {/* <NavBar is_loading={is_loading} />
-
-      {error !== "" && <Alert severity='error' onClose={() => {
-            setError("")
-          }
-        }>{error}</Alert>
-      }
-
-      <section className="container1">
-        <div className="container1_text">
-            <SearchBar text={text} setText={setText} setIsLoading={setIsLoading} />
-        </div>
-
-        {isCitySearch && <Result data={cityData} />}
-      </section> */}
-    </>
+      {data.data && <Result data={data} />}
+      {error && <ErrorPopup text={error} setText={setError} />}
+    </div>
   )
 }
 
-export default Home
+export default City
+
+export async function getServerSideProps(context: any) {
+  const { id } = context.params
+
+  const result = await fetch(`${process.env.APP_URL}/api/weather`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ city: id })
+  })
+
+  const data = await result.json()
+
+  return {
+    props: { id, data }
+  }
+}
