@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react"
 import { Result, SearchBar } from "../../../components"
+import ErrorPopup from "../../../components/Error";
 
 const City = ({ id, data }: { id: string; data: any }) => {
-  const [cityData, setCityData] = useState<any>(data)
-  const [text, setText] = useState<string>(cityData ? cityData.data.location.name : id)
+  const [text, setText] = useState<string>(data?.data?.location.name || id)
   const [error, setError] = useState<string>("")
 
   const handleSearch = async (isUsingPosition: { latitude: number; longitude: number } | false = false) => {
@@ -53,17 +53,20 @@ const City = ({ id, data }: { id: string; data: any }) => {
   }
 
   useEffect(() => {
-    if (!cityData) {
+    if (!data) {
       setText(id)
       handleSearch();
+    } else if (data.error) {
+      setError("City not found")
     }
-  }, [cityData])
+  }, [data])
 
   return (
     <div className="mx-auto px-6">
       <SearchBar text={text} setText={setText} handleSearch={handleSearch} getPosition={handleGetPosition} />
 
-      <Result data={cityData} />
+      {data.data && <Result data={data} />}
+      {error && <ErrorPopup text={error} setText={setError} />}
     </div>
   )
 }

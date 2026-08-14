@@ -128,7 +128,7 @@ const Result = ({ data }: ResultProps) => {
         </div>
       </div>
 
-      <div className="box">
+      <div className="box mb-4!">
         <div className="flex flex-wrap items-center justify-between gap-4 mb-[1.1rem]">
           <div>
             <h2 className="m-0 text-[1.15rem] font-extrabold">
@@ -158,12 +158,12 @@ const Result = ({ data }: ResultProps) => {
 
             <div className="flex gap-[.6rem] overflow-x-auto pb-4">
               {data.dataHistory.forecast.forecastday[0].hour.map((hour: any, index: number) => (
-                <div key={index} className="box bg-[#1c222e]! items-center justify-center gap-[.4rem]! py-[.8rem]!">
+                <div key={index + 1} className="box shadow-none! bg-[#eef1fa]! dark:bg-[#1c222e]! items-center justify-center gap-[.4rem]! py-[.8rem]!">
                   <span className="text-[.72rem] font-semibold text-muted">{hour.time.split(" ")[1]}</span>
                   <svg width="20" height="20" className="text-[#5271FF]">
                     <use href={tempIcon[hour.condition.text] || "/picto.svg#ic-sun"} />
                   </svg>
-                  <span className="text-[.85rem] font-semibold">{hour.temp_c}°</span>
+                  <span className="text-[.85rem] font-semibold text-text">{hour.temp_c}°</span>
                 </div>
               ))}
             </div>
@@ -172,14 +172,14 @@ const Result = ({ data }: ResultProps) => {
         {type === "5days" && (
           <div className="flex flex-wrap gap-[.6rem] justify-center">
             {data.dataHistory.forecast.forecastday.map((day: any, index: number) => (
-              <div key={index} className="box mb-4 bg-[#1c222e]! items-center gap-2!">
+              <div key={index + 1} className="box mb-4 dark:bg-[#1c222e]! items-center gap-2!">
                 <span className="font-extrabold">{new Date(day.date).toLocaleDateString("en-US", { weekday: "long" })}</span>
                 <svg width="30" height="30" className="text-[#5271FF]">
                   <use href={tempIcon[day.day.condition.text] || "/picto.svg#ic-sun"} />
                 </svg>
 
                 <div className="flex items-center gap-2 text-[.95rem] font-semibold">
-                  <span className="text-white">{day.day.maxtemp_c}°</span>
+                  <span className="text-text">{day.day.maxtemp_c}°</span>
                   <span className="text-muted">{day.day.mintemp_c}°</span>
                 </div>
               </div>
