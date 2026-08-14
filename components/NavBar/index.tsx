@@ -1,25 +1,19 @@
-import styles from './styles.module.scss'
+import Image from "next/image"
 
-interface NavBarProps {
-  is_loading?: boolean
-}
-
-const NavBar = ({ is_loading }: NavBarProps) => {
+const NavBar = () => {
   return (
-    <main className={styles.containernavbar}>
-      <div className={styles.containerlogo}>
-        <img
-          src="/favicon.ico"
+    <div className='flex items-center justify-between pt-7 px-6 pb-4'>
+      <div className='flex items-center justify-center gap-[0.6rem]'>
+        <Image
+          src="/logo-icon.svg"
           alt="logo"
-          style={{
-            animation: is_loading
-              ? 'spin 3s infinite cubic-bezier(0.25, 0.72, 0.53, 0.99)'
-              : '',
-          }}
+          width={32}
+          height={32}
+          priority
         />
-        <h2>Weather App</h2>
+        <span className="text-[1.35rem] font-bold">Weather App</span>
       </div>
-    </main>
+    </div>
   )
 }
 
