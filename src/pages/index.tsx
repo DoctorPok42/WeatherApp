@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import { SearchBar } from '../../components'
 import { useState } from 'react'
+import ErrorPopup from '@/components/Error'
 
 const Home = () => {
   const [text, setText] = useState<string>('')
@@ -9,7 +10,7 @@ const Home = () => {
   const handleSearch = async (isUsingPosition: { latitude: number; longitude: number } | false = false) => {
     try {
       if (text && !isUsingPosition) {
-        window.location.href = `/city/${text}`
+        window.location.href = `/${text}`
         return
       }
 
@@ -30,9 +31,10 @@ const Home = () => {
 
       setError("")
       setText(data.data.location.name)
-      window.location.href = `/city/${data.data.location.name}`
+      window.location.href = `/${data.data.location.name}`
 
     } catch (error: any) {
+      console.error(error)
       setError("Something went wrong")
     }
   }
@@ -55,30 +57,21 @@ const Home = () => {
   return (
     <>
       <Head>
-        <title>Weather App</title>
-        <meta name="description" content="Weather App" />
-        <link rel="icon" href="/favicon.ico" />
+        <title>Weather App - Check the Weather in Your City</title>
+        <meta name="description" content={`Check the weather in your city today. Get the latest temperature, humidity, wind speed, and more. Stay updated with accurate weather forecasts for your location.`} />
+        <meta name="keywords" content={`weather, city, temperature, forecast, humidity, wind speed, weather app`} />
+        <meta property="og:title" content={`Weather App - Check the Weather in Your City`} />
+        <link rel="canonical" href={`https://weather.doctorpok.io/`} />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="robots" content="index, follow" />
+        <meta sc-camel-char-set="utf-8" />
       </Head>
 
       <div className="mx-auto px-6">
         <SearchBar text={text} setText={setText} handleSearch={handleSearch} getPosition={handleGetPosition} />
+
+        {error && <ErrorPopup text={error} setText={setError} />}
       </div>
-
-      {/* <NavBar is_loading={is_loading} />
-
-      {error !== "" && <Alert severity='error' onClose={() => {
-            setError("")
-          }
-        }>{error}</Alert>
-      }
-
-      <section className="container1">
-        <div className="container1_text">
-            <SearchBar text={text} setText={setText} setIsLoading={setIsLoading} />
-        </div>
-
-        {isCitySearch && <Result data={cityData} />}
-      </section> */}
     </>
   )
 }
