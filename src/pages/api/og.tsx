@@ -28,7 +28,7 @@ const WEATHER_PATHS: Record<string, string> = {
 };
 
 const weatherIcon = (kind: keyof typeof WEATHER_PATHS, color: string) => {
-  const body = WEATHER_PATHS[kind].replace(/"C"/g, `"${color}"`);
+  const body = WEATHER_PATHS[kind].replaceAll('"C"', `"${color}"`);
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">${body}</svg>`;
   return `data:image/svg+xml;base64,${btoa(svg)}`;
 };
@@ -47,8 +47,8 @@ export default async function og(req: NextRequest) {
 
   const origin = new URL(req.url).origin;
   const [regular, extrabold] = await Promise.all([
-    fetch(`${origin}/fonts/Nunito-SemiBold.ttf`).then((r) => r.arrayBuffer()),
-    fetch(`${origin}/fonts/Nunito-ExtraBold.ttf`).then((r) => r.arrayBuffer()),
+    fetch(`${origin}/fonts/Nunito-Regular.ttf`).then((r) => r.arrayBuffer()),
+    fetch(`${origin}/fonts/Nunito-Regular.ttf`).then((r) => r.arrayBuffer()),
   ]);
 
   let name = city;
@@ -84,6 +84,15 @@ export default async function og(req: NextRequest) {
   const aqiColor = AQI_COLORS[Math.min(aqiIndex - 1, 5)];
   const aqiLabel = AQI_LABELS[Math.min(aqiIndex - 1, 5)];
 
+  const tempLabel = `${temp}°`;
+  const placeLabel = country ? `${name}, ${country}` : name;
+  const conditionLabel = `${condition} · feels like ${feels}°C`;
+
+  const metrics = [
+    { label: "Wind", value: `${wind} km/h` },
+    { label: "Humidity", value: `${humidity}%` },
+  ];
+
   return new ImageResponse(
     (
       <div
@@ -98,86 +107,83 @@ export default async function og(req: NextRequest) {
           fontFamily: "Nunito",
         }}
       >
-        < div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
           <img src={cloudMark(PRIMARY_LIGHT)} width={52} height={52} />
-          <div style={{ fontSize: 34, fontWeight: 800, color: TEXT }}> Weather App </div>
+          <div style={{ display: "flex", fontSize: 34, fontWeight: 800, color: TEXT }}>Weather App</div>
         </div>
 
-        {
-          ok ? (
-            <>
-              < div style={{ display: "flex", alignItems: "flex-end", gap: 32 }
-              }>
-                <div style={{ display: "flex", flexDirection: "column" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
-                    <div style={{ fontSize: 150, fontWeight: 800, color: accent, lineHeight: 1 }}>
-                      {temp}°
-                    </div>
-                    < img src={weatherIcon(iconKind(condition), accent)} width={82} height={82} />
-                  </div>
-                  < div style={{ fontSize: 58, fontWeight: 800, color: TEXT, marginTop: 12 }}>
-                    {name}
-                    {country ? <span style={{ color: MUTED, fontWeight: 600 }}>, {country} </span> : null}
-                  </div>
-                  < div style={{ fontSize: 30, fontWeight: 600, color: MUTED, marginTop: 4 }}>
-                    {condition} · ressenti {feels}°C
-                  </div>
-                </div>
+        {ok ? (
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
+              <div style={{ display: "flex", fontSize: 150, fontWeight: 800, color: accent, lineHeight: 1 }}>
+                {tempLabel}
               </div>
+              <img src={weatherIcon(iconKind(condition), accent)} width={82} height={82} />
+            </div>
+            <div style={{ display: "flex", fontSize: 58, fontWeight: 800, color: TEXT, marginTop: 12 }}>
+              {placeLabel}
+            </div>
+            <div style={{ display: "flex", fontSize: 30, fontWeight: 600, color: MUTED, marginTop: 4 }}>
+              {conditionLabel}
+            </div>
+          </div>
+        ) : null}
 
-              <div style={{ display: "flex", gap: 16 }}>
-                {
-                  [
-                    { label: "Vent", value: `${wind} km/h` },
-                    { label: "Humidité", value: `${humidity}%` },
-                  ].map((m) => (
-                    <div
-                      key={m.label}
-                      style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        background: CARD,
-                        border: `1px solid ${BORDER}`,
-                        borderRadius: 20,
-                        padding: "20px 28px",
-                        minWidth: 210,
-                      }}
-                    >
-                      <div style={{ fontSize: 22, fontWeight: 700, color: MUTED }}> {m.label} </div>
-                      < div style={{ fontSize: 34, fontWeight: 800, color: TEXT }}> {m.value} </div>
-                    </div>
-                  ))}
-                <div
-                  style={
-                    {
-                      display: "flex",
-                      flexDirection: "column",
-                      background: aqiColor,
-                      borderRadius: 20,
-                      padding: "20px 28px",
-                      minWidth: 210,
-                    }
-                  }
-                >
-                  <div style={{ fontSize: 22, fontWeight: 700, color: "rgba(255,255,255,0.85)" }}>
-                    Qualité de l'air
-                  </div>
-                  < div style={{ fontSize: 34, fontWeight: 800, color: "#ffffff" }}> {aqiLabel} </div>
+        {ok ? (
+          <div style={{ display: "flex", gap: 16 }}>
+            {metrics.map((m) => (
+              <div
+                key={m.label}
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  background: CARD,
+                  border: `1px solid ${BORDER}`,
+                  borderRadius: 20,
+                  padding: "20px 28px",
+                  minWidth: 210,
+                }}
+              >
+                <div style={{ display: "flex", fontSize: 22, fontWeight: 700, color: MUTED }}>
+                  {m.label}
+                </div>
+                <div style={{ display: "flex", fontSize: 34, fontWeight: 800, color: TEXT }}>
+                  {m.value}
                 </div>
               </div>
-            </>
-          ) : (
-            <div style={{ display: "flex", flexDirection: "column" }}>
-              <div style={{ fontSize: 86, fontWeight: 800, color: TEXT, lineHeight: 1.1 }}>
-                La météo, ville par ville
+            ))}
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                background: aqiColor,
+                borderRadius: 20,
+                padding: "20px 28px",
+                minWidth: 210,
+              }}
+            >
+              <div style={{ display: "flex", fontSize: 22, fontWeight: 700, color: "rgba(255,255,255,0.85)" }}>
+                Air Quality
               </div>
-              < div style={{ fontSize: 32, fontWeight: 600, color: MUTED, marginTop: 16 }}>
-                Température, vent, humidité, qualité de l'air et prévisions à 5 jours.
+              <div style={{ display: "flex", fontSize: 34, fontWeight: 800, color: "#ffffff" }}>
+                {aqiLabel}
               </div>
             </div>
-          )}
+          </div>
+        ) : null}
 
-        <div style={{ display: "flex", height: 8, borderRadius: 4, background: accent, width: 180 }} />
+        {!ok ? (
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            <div style={{ display: "flex", fontSize: 86, fontWeight: 800, color: TEXT, lineHeight: 1.1 }}>
+              City not found
+            </div>
+            <div style={{ display: "flex", fontSize: 32, fontWeight: 600, color: MUTED, marginTop: 16 }}>
+              Please check the city name and try again.
+            </div>
+          </div>
+        ) : null}
+
+        <div style={{ display: "flex", height: 8, borderRadius: 4, background: accent, width: "100%" }} />
       </div>
     ),
     {
