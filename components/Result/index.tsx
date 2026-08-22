@@ -1,4 +1,5 @@
 import Area from '../Area';
+import { weatherIconHref } from '../../src/lib/weatherIcon';
 
 import { useState } from "react";
 
@@ -7,7 +8,7 @@ interface ResultProps {
 }
 
 const Result = ({ data }: ResultProps) => {
-  const [type, setType] = useState<"today" | "5days">("today")
+  const [type, setType] = useState<"today" | "3days">("today")
 
   const epa = [
     "Good",
@@ -39,15 +40,6 @@ const Result = ({ data }: ResultProps) => {
       new Date().getHours()
   ]
 
-  const tempIcon = {
-    "Sunny": "/picto.svg#ic-sun",
-    "Clear": "/picto.svg#ic-moon",
-    "Partly cloudy": "/picto.svg#ic-cloud-sun",
-    "Cloudy": "/picto.svg#ic-cloud",
-    "Overcast": "/picto.svg#ic-cloud",
-    "Mist": "/picto.svg#ic-cloud-fog",
-  } as { [key: string]: string }
-
   return (
     <div className="">
       <div className="flex flex-wrap gap-4 justify-center mb-4">
@@ -55,7 +47,7 @@ const Result = ({ data }: ResultProps) => {
           <span className="text-[2.4rem] font-extrabold leading-none" style={{ color: tempColor[actual.temp_c < 25 ? 0 : actual.temp_c < 32 ? 1 : 2] }}>
             {actual.temp_c}°C
             <svg width="34" height="34" className="absolute top-[1.1rem] right-[1.1rem]">
-              <use href={tempIcon[data.data.current.condition.text] || "/picto.svg#ic-sun"} />
+              <use href={weatherIconHref(data.data.current.condition.text, data.data.current.is_day === 1)} />
             </svg>
           </span>
 
@@ -143,8 +135,8 @@ const Result = ({ data }: ResultProps) => {
             <button className={`bg-[#5271ff] text-white text-[.85rem] rounded-full px-[.9rem] py-[.3rem] cursor-pointer ${type === "today" ? "bg-[#5271ff]" : "bg-track text-muted!"}`} onClick={() => setType("today")}>
               Today
             </button>
-            <button className={`bg-track text-muted text-[.85rem] rounded-full px-[.9rem] py-[.3rem] cursor-pointer ${type === "5days" ? "bg-[#5271ff]! text-white!" : "bg-track"}`} onClick={() => setType("5days")}>
-              5-Days
+            <button className={`bg-track text-muted text-[.85rem] rounded-full px-[.9rem] py-[.3rem] cursor-pointer ${type === "3days" ? "bg-[#5271ff]! text-white!" : "bg-track"}`} onClick={() => setType("3days")}>
+              3-Days
             </button>
           </div>
         </div>
@@ -161,7 +153,7 @@ const Result = ({ data }: ResultProps) => {
                 <div key={index + 1} className="box shadow-none! bg-[#eef1fa]! dark:bg-[#1c222e]! items-center justify-center gap-[.4rem]! py-[.8rem]!">
                   <span className="text-[.72rem] font-semibold text-muted">{hour.time.split(" ")[1]}</span>
                   <svg width="20" height="20" className="text-[#5271FF]">
-                    <use href={tempIcon[hour.condition.text] || "/picto.svg#ic-sun"} />
+                    <use href={weatherIconHref(hour.condition.text, hour.is_day === 1)} />
                   </svg>
                   <span className="text-[.85rem] font-semibold text-text">{hour.temp_c}°</span>
                 </div>
@@ -169,13 +161,13 @@ const Result = ({ data }: ResultProps) => {
             </div>
           </div>
         )}
-        {type === "5days" && (
+        {type === "3days" && (
           <div className="flex flex-wrap gap-[.6rem] justify-center">
             {data.dataHistory.forecast.forecastday.map((day: any, index: number) => (
               <div key={index + 1} className="box mb-4 dark:bg-[#1c222e]! items-center gap-2!">
                 <span className="font-extrabold">{new Date(day.date).toLocaleDateString("en-US", { weekday: "long" })}</span>
                 <svg width="30" height="30" className="text-[#5271FF]">
-                  <use href={tempIcon[day.day.condition.text] || "/picto.svg#ic-sun"} />
+                  <use href={weatherIconHref(day.day.condition.text, true)} />
                 </svg>
 
                 <div className="flex items-center gap-2 text-[.95rem] font-semibold">

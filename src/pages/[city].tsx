@@ -108,8 +108,15 @@ export async function getServerSideProps(context: any) {
     headers: {
       "Content-Type": "application/json"
     },
-    body: JSON.stringify({ city: city })
+    body: JSON.stringify({ city })
   })
+
+  if (!result.ok) {
+    console.error("Failed to fetch weather data:", result.statusText)
+    return {
+      props: { id: city, data: { error: "Failed to fetch weather data" } }
+    }
+  }
 
   const data = await result.json()
 

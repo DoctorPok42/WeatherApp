@@ -9,13 +9,11 @@ export default async function weather(req: NextApiRequest, res: NextApiResponse)
     );
 
     const responseHistory = await fetch(
-      `https://api.weatherapi.com/v1/forecast.json?key=${process.env.WEATHER_API_KEY}&q=${city}&days=5&aqi=no&alerts=no`
+      `https://api.weatherapi.com/v1/forecast.json?key=${process.env.WEATHER_API_KEY}&q=${city}&days=3&aqi=no&alerts=no`
     );
 
     const data = await response.json();
     const dataHistory = await responseHistory.json();
-
-    console.log("data", dataHistory.forecast.forecastday.length);
 
     if (data.error) {
       res.status(400).json({ error: data.error.message });
